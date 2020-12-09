@@ -1,0 +1,224 @@
+$font-path: '../fonts';
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-Medium.eot');
+    src: local('VisueltPro-Medium'),
+        url('#{$font-path}/VisueltPro-Medium.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-Medium.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-Medium.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-Regular.eot');
+    src: local('VisueltPro-Regular'),
+        url('#{$font-path}/VisueltPro-Regular.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-Regular.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-Regular.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-Bold.eot');
+    src: local('VisueltPro-Bold'),
+        url('#{$font-path}/VisueltPro-Bold.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-Bold.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-Bold.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-ExtraLight.eot');
+    src: local('VisueltPro-ExtraLight'),
+        url('#{$font-path}/VisueltPro-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-ExtraLight.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-ExtraLight.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-Thin.eot');
+    src: local('VisueltPro-Thin'),
+        url('#{$font-path}/VisueltPro-Thin.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-Thin.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-Thin.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-Italic.eot');
+    src: local('VisueltPro-Italic'),
+        url('#{$font-path}/VisueltPro-Italic.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-Italic.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-Italic.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-ExtraLightItalic.eot');
+    src: local('VisueltPro-ExtraLightItalic'),
+        url('#{$font-path}/VisueltPro-ExtraLightItalic.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-ExtraLightItalic.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-ExtraLightItalic.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-ExtraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-BoldItalic.eot');
+    src: local('VisueltPro-BoldItalic'),
+        url('#{$font-path}/VisueltPro-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-BoldItalic.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-BoldItalic.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-Black.eot');
+    src: local('VisueltPro-Black'),
+        url('#{$font-path}/VisueltPro-Black.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-Black.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-Black.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-MediumItalic.eot');
+    src: local('VisueltPro-MediumItalic'),
+        url('#{$font-path}/VisueltPro-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-MediumItalic.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-MediumItalic.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-Light.eot');
+    src: local('VisueltPro-Light'),
+        url('#{$font-path}/VisueltPro-Light.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-Light.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-Light.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-BlackItalic.eot');
+    src: local('VisueltPro-BlackItalic'),
+        url('#{$font-path}/VisueltPro-BlackItalic.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-BlackItalic.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-BlackItalic.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-LightItalic.eot');
+    src: local('VisueltPro-LightItalic'),
+        url('#{$font-path}/VisueltPro-LightItalic.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-LightItalic.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-LightItalic.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Visuelt Pro';
+    src: url('#{$font-path}/VisueltPro-ThinItalic.eot');
+    src: local('VisueltPro-ThinItalic'),
+        url('#{$font-path}/VisueltPro-ThinItalic.eot?#iefix') format('embedded-opentype'),
+        url('#{$font-path}/VisueltPro-ThinItalic.woff2') format('woff2'),
+        url('#{$font-path}/VisueltPro-ThinItalic.woff') format('woff'),
+        url('#{$font-path}/VisueltPro-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+}
+
+
+
+
+@font-face {
+	font-family: 'Kelson Sans RU';
+	src: url('#{$font-path}/KelsonSans-RegularRU.eot');
+	src: local('Kelson Sans Regular RU'), local('KelsonSans-RegularRU'),
+		url('#{$font-path}/KelsonSans-RegularRU.eot?#iefix') format('embedded-opentype'),
+		url('#{$font-path}/KelsonSans-RegularRU.woff') format('woff'),
+		url('#{$font-path}/KelsonSans-RegularRU.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Kelson Sans RU';
+	src: url('#{$font-path}/KelsonSans-LightRU.eot');
+	src: local('Kelson Sans Light RU'), local('KelsonSans-LightRU'),
+		url('#{$font-path}/KelsonSans-LightRU.eot?#iefix') format('embedded-opentype'),
+		url('#{$font-path}/KelsonSans-LightRU.woff') format('woff'),
+		url('#{$font-path}/KelsonSans-LightRU.ttf') format('truetype');
+	font-weight: 300;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Yu Gothic Light';
+	src: url('#{$font-path}/KelsonSans-LightRU.eot');
+	src: local('Yu Gothic Light'), local('Yu Gothic Light'),
+		url('#{$font-path}/yugothil.woff') format('woff'),
+		url('#{$font-path}/yugothil.ttf') format('truetype');
+	font-weight: 300;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Kelson Sans RU';
+	src: url('#{$font-path}/KelsonSans-BoldRU.eot');
+	src: local('Kelson Sans Bold RU'), local('KelsonSans-BoldRU'),
+		url('#{$font-path}/KelsonSans-BoldRU.eot?#iefix') format('embedded-opentype'),
+		url('#{$font-path}/KelsonSans-BoldRU.woff') format('woff'),
+		url('#{$font-path}/KelsonSans-BoldRU.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+
+
+$family-sans-serif: Visuelt Pro,Roboto,Helvetica Neue, Helvetica, Arial, sans-serif;
+$family-header: Kelson Sans RU, Proxima Nova Rg,Roboto,Helvetica Neue, Helvetica, Arial, sans-serif;
+$family-news: Kelson Sans RU, Roboto,Helvetica Neue, Helvetica, Arial, sans-serif;
+$family-primary: $family-sans-serif;
+$family-secondary: $family-header;
+.is-family-news{font-family: $family-news;font-weight:500}

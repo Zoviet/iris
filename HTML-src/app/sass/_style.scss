@@ -1,0 +1,179 @@
+.is-0 {font-size: 4rem}
+.slogun {margin-top:17%}
+.is-striped {background-image:url('../img/stripe.png');
+background-repeat:repeat;}
+.is-striped-black {};
+.icondown:hover {color:$red}
+.is-fixed{position:fixed; bottom:0px;left:0px;width:100%}
+
+.has-shadows {
+	text-shadow: 1px 1px 1px $grey-light;
+}
+
+.has-gradient {
+	background: linear-gradient(to top right, $grey, $grey-light);	
+}
+
+.has-padding {padding:1rem}
+
+.is-margin-left {
+	&-0 {
+		margin-left:0px!important;
+	}
+	&-1 {
+		margin-left:1rem;
+	}
+	&-2 {
+		margin-left:1.5rem;
+	}
+	&-3 {
+		margin-left:2rem;
+	}
+}
+
+.is-margin-right {
+	&-0 {
+		margin-left:0px!important;
+	}
+	&-1 {
+		margin-left:1rem;
+	}
+	&-2 {
+		margin-left:1.5rem;
+	}
+	&-3 {
+		margin-left:2rem;
+	}
+}
+
+.is-margin-bottom {
+	&-0 {
+		margin-bottom:0px!important;
+	}
+	&-1 {
+		margin-bottom:1rem;
+	}
+	&-2 {
+		margin-bottom:1.5rem;
+	}
+	&-3 {
+		margin-bottom:2rem;
+	}
+	&-4 {
+		margin-bottom:3rem;
+	}
+}
+
+.is-margin-top {
+	&-0 {
+		margin-top:0px!important;
+	}
+	&-1 {
+		margin-top:1rem;
+	}
+	&-2 {
+		margin-top:1.5rem;
+	}
+	&-3 {
+		margin-top:2rem;
+	}
+	&-4 {
+		margin-top:3rem;
+	}
+}
+
+.is-padding-top {
+    &-0 {		
+		padding-top:0;
+		margin-top:0;
+	}
+	&-1 {
+		padding-top:1rem;
+	}
+	&-2 {
+		padding-top:1.5rem;
+	}
+	&-3 {
+		padding-top:2rem;
+	}
+	&-4 {
+		padding-top:3rem;
+	}
+	&-5 {
+		padding-top:4rem;
+	}
+}
+
+
+.is-padding-bottom {
+    &-0 {		
+		padding-bottom:0;
+		margin-bottom:0;
+	}
+	&-1 {
+		padding-bottom:1rem;
+	}
+	&-2 {
+		padding-bottom:1.5rem;
+	}
+	&-3 {
+		padding-bottom:2rem;
+	}
+	&-4 {
+		padding-bottom:3rem;
+	}
+	&-5 {
+		padding-bottom:4rem;
+	}
+}
+
+.is-underline {text-decoration: underline}
+
+.navbar-dropdown {min-width:300px;padding:1rem}
+.has-border-bottom {border-bottom:0.5rem solid $link;}
+
+
+.category {
+	position:absolute; 
+	top:0px; 
+	left:0px; 
+	z-index:1000; 
+	padding:0.5rem;
+}
+
+.gradient {
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.9));
+	text-shadow: 1px 1px 2px $white-ter, 0 0 1em $white-bis; /* Параметры тени */
+	
+}
+
+.newsline {
+	color: $white;
+	margin-left: 1rem;
+	font-size:70%;
+	display:block;
+	max-width: 70%;
+	overflow:hidden;	
+}
+
+.product {min-height:40rem}
+.sublogo {width:150px}
+
+hr {background-color: $yag-yellow-light!important}
+.newsline:hover { 
+	color: $white;
+	text-decoration: underline;	
+}
+.footer a {color:$white}
+
+.newsmenu a {color:$dark!important}
+.newsmenu> .panel-block {border-left:0px!important; border-right:0px!important;border-top: 0px!important}
+.newsblock>.card {min-height:500px;max-height:500px;overflow:hidden}
+
+
+
+
+
+
+
+
