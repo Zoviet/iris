@@ -1,0 +1,15 @@
+{
+    "name": "zoviet/iris",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Zoviet",
+            "email": "ulgrad@inbox.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+		"mikecao/flight": "*"
+	}
+}
