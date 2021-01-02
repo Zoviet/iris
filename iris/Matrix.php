@@ -15,26 +15,35 @@
 /**
  * Свойства
  * @var  public int ID Идентификатор веерной матрицы.
+ * @var  public int parent_ID Идентификатор родительской веерной матрицы.
  * @var  public int version Версия редакции веерной матрицы.
+ * @var  public int depth Глубина веерной матрицы.
  * @var  public string name Название веерной матрицы.
  * @var  public string desc Описание веерной матрицы.
  * @var  public array comments Комментарии к веерной матрице.
  * @var  public string scheme Схема представления феноменов.
- * @var  public array of matrix matrixs Массив всех матриц феноменов веерной матрицы.
+ * @var  public Reestr Реестр матриц веерной матрицы - объект типа Reestr этого же пространства имен iris.
+ * @var  protected int current Идентификатор текущей (в работе конвейера) матрицы из массива матриц.
+ * Все свойства для инициализации представлены в виде ассоциированного массива.
  * 
  * Конструктор
- * @matrix $matrix = NULL Принимает 
+ * @var array $array Свойства для инициализации.
+ * 
+ * Инициализатор
+ * @method private init($data) Инициализация матрицы феноменов свойствами.
  * 
  * Статистические методы
- * @method  static mixed depth($depth=NULL) Глубина веерной матрицы. Без аргументов выдает количество уровней раскрытия (INT), с аргументами - матрицы феноменов запрошенного уровня.
+ * @method  static mixed depths($depth=NULL) Глубина веерной матрицы. Без аргументов выдает количество уровней раскрытия (INT), с аргументами - матрицы феноменов запрошенного уровня.
  * @method  static array levels($matrix_id=NULL) Уровни организации (структуры) для запрашиваемой матрицы феноменов. При отсутствии аргументов - уровни организации матрицы нулевого уровня. 
  *
  * Сохранение и загрузка матриц.
  * @method  public string export() Экспорт веерной матрицы в iris json. Возвращает строку json формата. 
  * @method  public bool import() Импорт веерной матрицы из iris json. Возвращает true в случае успеха, выбрасывает исключения в случае неудачи. 
  *
- * Конвейер создания матриц феноменов.
- * @method  public int start($depth=0) Создание матрицы феноменов: глубина и размерность (не обязательно).
+ * Работа с реестром матриц.
+ * @method  public void start($data=NULL) Создание матрицы с инициализацией свойствами. Добавляет объекта типа matrix в массив матриц, устанавливает свойство current. 
+ * @method  public void choise($matrix_id) - Выбор матрицы из массива матриц для работы. Устанавливает current.
+ * @method  public void delete 
  * @method  public void add_level($name) Registers a class to a framework method.
  *
  * Filtering.
