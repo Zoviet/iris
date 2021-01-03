@@ -38,19 +38,39 @@
 */
 
 namespace iris;
+use iris\Config\Errors;
 
 class Reestr {
 
 	public $ID = NULL;   
-	private $data = array();
+	public $data = array();
 	public $depths = array(); 
-	protected $errors = Config\Errors::reestr_errors;
+	
+	//Конструктор реестра (создание реестра из данных объекта типа Reestr)
+	
+	public function __construct($init=NULL) {
+		if (!empty($init)) {
+			if (isset($init->data)) {						
+				foreach ($init->data as $key=>$matrix) {
+					try {
+						$this->data[$key] = new Matrix($matrix);
+					} catch (\Exception $e) {
+						throw new \Exception(Errors::reestr['R03']);
+						error_log($e->getMessage(), 0);					
+					}
+				}				
+				$this->depths = $init->depths;
+			} else {
+				throw new \Exception(Errors::reestr['R02']);
+			}
+		}  
+	}
 	
 	//Добавление матрицы в реестр
 	
 	public function add($matrix) {		
 		if (!isset($matrix->ID)) {
-			throw new \Exception($this->errors['R01']);
+			throw new \Exception(Errors::reestr['R01']);
 		} else {
 			$this->ID = $matrix->ID;
 			$this->data[$this->ID] = $matrix;	
@@ -69,7 +89,7 @@ class Reestr {
 	
 	public function delete($id) {
 		unset ($this->data[$id]);
-		unset (Helpers\Array::multi_search($this->depths,$id));
+		unset ($this->data[Helpers\Arrays::multi_search($this->depths,$id)]);
 	}
 	
 	//Получение списка матриц запрашиваемой глубины

@@ -4,7 +4,7 @@
  */ 
 namespace iris\Helpers;
 
-class Array {			
+class Arrays {			
 	
 	public static function multi_search(array $array, $item) //поиск в двухмерном массиве
 	{

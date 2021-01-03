@@ -9,245 +9,343 @@
 /**
  * Matrix: класс представления веерной матрицы.  * 
  * Функционал: рекурсивное создание веерной матрицы любой глубины. Матрицы разных уровней являются экземплярами этого же класса с теми же методами и свойствами.
- * Таким образом, каждыя веерная матрица может быть рассмотрена как отдельно, так и как раскрытие родительской веерной матрицы той или иной степени глубины.
- */
- 
-/**
- * Свойства
- * @var  public int ID Идентификатор веерной матрицы.
- * @var  public int parent_ID Идентификатор родительской веерной матрицы.
- * @var  public int version Версия редакции веерной матрицы.
- * @var  public int depth Глубина веерной матрицы.
- * @var  public string name Название веерной матрицы.
- * @var  public string desc Описание веерной матрицы.
- * @var  public array comments Комментарии к веерной матрице.
- * @var  public string scheme Схема представления феноменов.
- * @var  public Reestr Реестр матриц веерной матрицы - объект типа Reestr этого же пространства имен iris.
- * @var  protected int current Идентификатор текущей (в работе конвейера) матрицы из массива матриц.
- * Все свойства для инициализации представлены в виде ассоциированного массива.
- * 
- * Конструктор
- * @var array $array Свойства для инициализации.
- * 
- * Инициализатор
- * @method private init($data) Инициализация матрицы феноменов свойствами.
- * 
- * Статистические методы
- * @method  static mixed depths($depth=NULL) Глубина веерной матрицы. Без аргументов выдает количество уровней раскрытия (INT), с аргументами - матрицы феноменов запрошенного уровня.
- * @method  static array levels($matrix_id=NULL) Уровни организации (структуры) для запрашиваемой матрицы феноменов. При отсутствии аргументов - уровни организации матрицы нулевого уровня. 
- *
- * Сохранение и загрузка матриц.
- * @method  public string export() Экспорт веерной матрицы в iris json. Возвращает строку json формата. 
- * @method  public bool import() Импорт веерной матрицы из iris json. Возвращает true в случае успеха, выбрасывает исключения в случае неудачи. 
- *
- * Работа с реестром матриц.
- * @method  public void start($data=NULL) Создание матрицы с инициализацией свойствами. Добавляет объекта типа matrix в массив матриц, устанавливает свойство current. 
- * @method  public void choise($matrix_id) - Выбор матрицы из массива матриц для работы. Устанавливает current.
- * @method  public void delete 
- * @method  public void add_level($name) Registers a class to a framework method.
- *
- * Filtering.
- * @method  static void before($name, $callback) Adds a filter before a framework method.
- * @method  static void after($name, $callback) Adds a filter after a framework method.
- *
- * Variables.
- * @method  static void set($key, $value) Sets a variable.
- * @method  static mixed get($key) Gets a variable.
- * @method  static bool has($key) Checks if a variable is set.
- * @method  static void clear($key = null) Clears a variable.
- *
- * Views.
- * @method  static void render($file, array $data = null, $key = null) Renders a template file.
- * @method  static \flight\template\View view() Returns View instance.
- *
- * Request & Response.
- * @method  static \flight\net\Request request() Returns Request instance.
- * @method  static \flight\net\Response response() Returns Response instance.
- * @method  static void redirect($url, $code = 303) Redirects to another URL.
- * @method  static void json($data, $code = 200, $encode = true, $charset = "utf8", $encodeOption = 0, $encodeDepth = 512) Sends a JSON response.
- * @method  static void jsonp($data, $param = 'jsonp', $code = 200, $encode = true, $charset = "utf8", $encodeOption = 0, $encodeDepth = 512) Sends a JSONP response.
- * @method  static void error($exception) Sends an HTTP 500 response.
- * @method  static void notFound() Sends an HTTP 404 response.
- *
- * HTTP Caching.
- * @method  static void etag($id, $type = 'strong') Performs ETag HTTP caching.
- * @method  static void lastModified($time) Performs last modified HTTP caching.
+ * Таким образом, каждая веерная матрица может быть рассмотрена как отдельно, так и как раскрытие родительской веерной матрицы той или иной степени глубины.
  */
 
 namespace iris;
 
+use iris\Config\Defaults;
+use iris\Config\Errors;
+
 class Matrix {
-	 /**
-     * @var mixed[]
-     */
-    protected static $data = array();    
-    protected static $config_file = 'config.json';  
 	
-	public static function init() //значения по умолчанию
-	{
-		self::set('base_url','http://'.$_SERVER['SERVER_NAME']);	
-		self::set('title','Стенд для испытаний амортизаторов');	
-		self::set('bedding_timeout',10); //время отсечения для стадии приработки	
-		self::set('save_log',FALSE); //сохранять логи работы
-		self::set('log_file','logs/testing.log'); //файл логов работы
-		self::set('pagination',50);//количество проектов на страницу архива
-		self::set('ammos_dir',__DIR__.'/ammos');	
-		self::set('ammos_filename', 'ammos.json');		
-		self::set('results_dir', __DIR__.'/results'); 		
-		self::set('dir_permission',0777);
-		self::set('config_filename','config.xml');
-		self::set('ammos_collection_errors',[
-			'Для записи амортизатора в базу необходимо указать тип амортизатора',
-			'Необходимо указать усилия сжатия и отбоя',
-			'Не найден запрошенный тип амортизатора'
-		]);
-
-		self::set('connect_errors',[
-			'Передано не булево значение',			
-		]);
-		self::set('connect_messages',[
-			'Тест соединения',
-			'Начальный адрес',
-			'Смещение',
-			'Полученное значение',
-			'Преобразованное значение',
-			'Передаваемое значение'
-		]);
-		self::set('test_types',[
-			'Определение плавности перемещения подвижных деталей',
-			'Снятие рабочих диаграмм',
-			'Построение характеристик амортизатора',
-			'Снятие температурных характеристик',
-			'Ресурсные испытания'			
-		]);
-		self::set('tests_errors',[
-			'Не указан тип испытаний',
-			'Ошибка в данных референтного амортизатора',
-			'Ошибка при попытке подключения к устройству',
-			'Не получен положительный ответ об окочании действия за (сек)',
-			'Не удалось отправить сигнал начала испытания',
-			'Данные не были получены, хотя сигнал об окончании испытания был',
-			'Температура амортизатора перед началом испытаний вне норм',
-			'Ошибка в данных снятия характеристик амортизатора'	
-			
-		]);
-		self::set('tests_messages',[
-			'Амортизатор подведен к верхней точке и прокачан',
-			'Испытание закончено успешно',	
-			'Испытание завершено принудительно. Логи сохранены, протокол не сохранен. Можно запустить заново',
-			'Испытание стартовало',
-			'Сигнал на начало испытания подан успешно на адрес',
-			'Подача сигнала на калибровку и прокачку',
-			'Подача сигнала на начало испытания',
-			'Температура амортизатора в процессе измерений была в норме',
-			'Температура амортизатора при испытаниях была превышена на ',
-			'Температура амортизатора при испытаниях была ниже нормы на ',
-			'Температура амортизатора составляет',
-			'Результаты снятия зависимости сопротивления от скорости'		
-		]);
-		
-	}
+	/**
+	* Свойства
+	* @var  public int id Идентификатор веерной матрицы.
+	* @var  public int parent Идентификатор родительской веерной матрицы.
+	* @var  public int depth Глубина веерной матрицы.
+	* @var  public string name Название веерной матрицы.
+	* @var  public string desc Описание веерной матрицы.
+	* @var  public string scheme Схема представления феноменов.
+	* @var  public reestr Реестр матриц веерной матрицы - объект типа Reestr этого же пространства имен iris.
+	* @var  public array data Феномены и уровни матрицы
+	* @var  protected int current Идентификатор текущей (в работе конвейера) матрицы из массива матриц.
+	* @var  protected array errors Ошибки класса
+	* 
+	*/
 	
-	public static function default_connect() //загрузка параметров настройки соединения по умолчанию
-	{
-		self::set('connect',array(
-			'IP'=>'127.0.0.1', //IP-адрес PLC 
-			'Port'=>502, //Порт
-			'UnitID'=>1, //ID устройства
-			'Endianess'=>'BIG_ENDIAN_LOW_WORD_FIRST', //Порядок байт
-			'Address1'=>[1,16,'WriteSingleCoilRequest','Адрес передачи сигнала на начало испытаний','включается мотор-редуктор и подводит амортизатор к ВМТ'], //coils запись
-			'Address2'=>[2,16,'ReadInputDiscretesRequest','Адрес приема сигнала об окончании прокачки','Вновь включается привод, процесс испытания синхронизируется по стробу ВМТ с датчика угла поворота КШМ и в течение четырех циклов происходит прокачка амортизатора'], //Discrete inputs чтение
-			'Address3'=>[3,16,'WriteSingleCoilRequest','Адрес передачи сигнала о начале испытаний амортизатора с отрывающимися клапанами',''], //coils запись
-			'Address4'=>[4,16,'ReadInputDiscretesRequest','Адрес приема сигнала об окончании испытания (любого из)',''], //Discrete inputs чтение
-			'Address5'=>[5,6,'ReadInputRegistersRequest','Адрес приема данных о перемещении',''], //Input registers чтение
-			'Address6'=>[6,6,'ReadInputRegistersRequest','Адрес приема данных об усилии',''], //Input registers чтение
-			'Address7'=>[7,6,'ReadInputRegistersRequest','Адрес приема данных о температуре',''], //Input registers чтение
-			'Address8'=>[8,6,'ReadInputRegistersRequest','Адрес приема данных о частоте',''], //Input registers чтение
-			'Address9'=>[9,16,'WriteSingleCoilRequest','Адрес передачи аварийного сигнала (что-то пошло не так)',''], //coils запись
-			'Address10'=>[10,1,'WriteSingleCoilRequest','Адрес передачи сигнала на медленное перемещение',''], //coils запись
-			'Address11'=>[11,1,'WriteSingleCoilRequest','Адрес передачи сигнала на снятие рабочих диаграмм',''], //coils запись
-			'Address12'=>[12,1,'WriteSingleCoilRequest','Адрес передачи сигнала на снятие характеристик амортизатора',''], //coils запись
-		));			
-	} 
+	public $id;
+	public $parent;
+	public $depth;
+	public $name;
+	public $desc;
+	public $scheme;
+	public $reestr;
+	public $data;
+	protected $current;
 	
-	public static function connect_types() //допустимые типы соединений
-	{
-		self::set('connect_types',[
-		'ReadCoilsRequest',
-		'ReadInputDiscretesRequest',
-		'ReadHoldingRegistersRequest',
-		'ReadInputRegistersRequest',
-		'WriteSingleCoilRequest'
-		]);		
-	}
+	/**	
+	 * 	Конструктор матрицы	 
+	 * @param array данные для инициалиазции матрицы: см blank_data           
+     * @return void
+     * По умолчанию использует данные по умолчанию
+	*/
 	
-	public static function connect_addrs() //возвращает адреса соединений
-	{
-		$addrs = array();
-		$connect = self::get('connect');	
-		foreach ($connect as $key=>$data) { //выделяем из конфига адреса соединений
-			if (is_array($data)) {
-				$addrs[$key]= $data;
-			}		
+	public function __construct($init_data=NULL) {
+		if (empty($init_data)) 	$init_data = $this->blank_data();		
+		try {		
+			$this->init($init_data);
+		} catch (\Exception $e) {
+			throw new \Exception(Errors::matrix['M03'].' :'.$e->getMessage());
+			error_log($e->getMessage(), 0);					
 		}
-		return $addrs;
 	}
 	
-    /**
-     * Добавляет значение в конфиг
-     *
-     * @param string $key
-     * @param mixed $value
-     * @return void
-     */
-    public static function set($key, $value)
-    {
-		self::pull();
-        self::$data[$key] = $value;
-        self::push();
-    }
-
-    /**
-     * Возвращает значение из конфига по ключу
-     *
-     * @param string $key
-     * @return mixed
-     */
-    public static function get($key)
-    {
-		self::pull();
-        return isset(self::$data[$key]) ? self::$data[$key] : null;
-    }    
-    
-    protected static function push()
-    {
-		return file_put_contents(__DIR__.'/'.self::$config_file,json_encode(self::$data));
+	/**	
+	 * Инициализация матрицы начальными данными по умолчанию	
+	*/
+	
+	protected function blank_data($data=NULL) {
+		if (empty($data)) {
+			$data = new \stdClass();
+			$data->id = Helpers\Times::timeID();
+			$data->name = Defaults::matrix['name'];
+			$data->desc = Defaults::matrix['desc'];	
+			$data->scheme = Defaults::matrix['scheme'];		
+			$data->reestr = NULL;
+			$data->data = array();			
+		} 
+		return $data;
+	}
+		
+	/**	
+	 * Инициализация матрицы 	
+	*/
+	
+	public function init($init) {
+		if (!isset($init->id)) {
+			throw new \Exception(Errors::matrix['M01']);
+		} else {
+			$this->id = $init->id;		
+			$this->parent = (!empty($init->parent)) ? $init->parent : NULL;
+			$this->depth = (!empty($this->parent)) ? $init->depth : NULL;
+			$this->name = $init->name;
+			$this->desc = $init->desc;
+			$this->scheme = (!empty($init->scheme)) ? $init->scheme : Defaults::matrix['scheme']; //загрузка схемы данных
+			if (!empty($init->reestr)) { //инициализация реестра
+				try {
+					$this->reestr = new Reestr($init->reestr);
+				} catch (\Exception $e) {
+					throw new \Exception(Errors::matrix['M02']);
+					error_log($e->getMessage(), 0);					
+				}
+			} else {
+				$this->reestr = new Reestr();
+			}
+			$this->data = (!empty($init->data)) ? $init->data : array('items'=>array(),'levels'=>array(),'data'=>array());			
+		} 
 	}
 	
-	protected static function pull()
-    {
-		$data = file_get_contents(__DIR__.'/'.self::$config_file);
-		if ($data) self::$data = (array) json_decode($data);		
+	/**	
+	 * Методы работы с иерархией уровней и соответствующих им специалистов (предметной области). 
+	 * Формат датасета - двухмерный массив с числовыми координатами: нулевая строка - предметы 
+	*/
+	
+	/**	
+	 * Проверка размерности веерной матрицы
+	*/
+	
+	public function test_dimension() {
+		if (count($this->data['levels']) == count($this->data['items'])) {
+			return TRUE;
+		} else {
+			throw new \Exception(Errors::matrix['M04']);
+		}
 	}
-    
-    public static function list()
-    {
-		self::pull();
-		return self::$data;
-	}    
-    /**
-     * Удаляет значение из конфига по ключу
-     *
-     * @param string $key
-     * @return void
-     */
-    final public static function remove($key)
-    {
-		self::pull();
-        if (array_key_exists($key, self::$data)) {
-            unset(self::$data[$key]);
-        }
-        self::push();
-    }
+	
+	/**	
+	 * Получение размерности веерной матрицы
+	*/
+	
+	public function get_dimension() {
+		if ($this->test_dimension()) {
+			return count($this->data['levels']);
+		}
+	}
+	
+	/**	
+	 * Приведение размерности веерной матрицы к нормальному
+	*/
+	
+	protected function cast() {
+		$r = count($this->data['levels']) - count($this->data['items']);
+		if ($r>0) $this->data['items'] = array_merge($this->data['items'],array_fill(0,$r,''));		
+		if ($r<0) $this->data['levels'] = array_merge($this->data['levels'],array_fill(0,abs($r),''));							
+	}
+	
+	/**	
+	 * Перестройка матрицы при удалении элементов уровня или предмета, принимает координату x уровня или предмета
+	*/
+	
+	protected function rebuild($x) {
+		if (!empty($this->reestr->data)) { //Если матрица имеет производные
+			throw new \Exception(Errors::matrix['M05']);
+		} else { //если матрица не имеет производных
+			$this->delete_agregat($x); //то удаляем элементарный агрегат
+			if ($this->depth==0) { //если при этом она является матрицей нулевого уровня
+				$this->reindex(); //то проводим её переиндексацию
+			}
+		}
+	}
+	
+	/**	
+	 * Удаление элементарного агрегата со всеми производными без переиндексации индексов
+	*/
+	
+	protected function delete_agregat($x) {
+		unset($this->data['items'][$x]); //удаление предмета
+		unset($this->data['levels'][$x]); //удаление уровня
+		unset($this->data['data'][$x]); //удаление столбца соответствующих феноменов			
+		foreach ($this->data['data'] as $key=>$value) { //удаление строки соответствующих феноменов	
+			unset ($this->data['data'][$key][$x]);
+		}	
+	}
+	
+	/**	
+	 * Переиндексация матрицы 
+	*/
+		
+	protected function reindex() {
+		$this->data['items'] = array_values($this->data['items']);
+		$this->data['levels'] = array_values($this->data['levels']);
+		$this->data['data'][0] = array();
+		$this->data['data'] = array_values($this->data['data']);
+		foreach ($this->data['data'] as $key=>$value) { 
+			$this->data['data'][$key][0] = array(); 
+			$this->data['data'][$key] = array_values($this->data['data'][$key]);
+		}
+	}
+		
+	/**	
+	 * Получение всех уровней организации (структур). NULL при отсутствии уровней (пустой матрице)
+	*/
+	
+	public function levels() {
+		$levels = array();
+		if (isset($this->data['levels'])) $levels = $this->data['levels']; 		
+		return $levels;
+	}
+	
+	/**	
+	 * Получение всех предметов (специалистов). NULL при отсутствии специалистов (предметов) 
+	*/
+	
+	public function items() {
+		$items = array();
+		if (isset($this->data['items'])) $items = $this->data['items']; 		
+		return $items;
+	}
+			
+	/**	
+	 * Редактирование, получение и добавление уровня вниз иерархии уровней или по координате
+	*/
+	
+	public function level($level=NULL,$x=NULL) {
+		if (is_numeric($x) and !empty($level)) {
+			$this->data['levels'][$x] = $level;
+		} else {
+			$this->data['levels'][] = $level;
+		}
+		return $this;
+	}
+		
+	/**	
+	 * Редактирование, получение и добавление предмета в конец или по координате
+	*/
+	
+	public function item($item=NULL,$y=NULL) {
+		if (is_numeric($y) and !empty($item)) {
+			$this->data['items'][$y] = $item;
+		} else {
+			$this->data['items'][] = $item;
+		}
+		return $this;
+	}
+	
+	/**	
+	 * Добавление элементарного агрегата: уровень, предмет, феномен главной диагонали (не обязательно)
+	*/
+	
+	public function add_agregat($level,$item,$phenomen=NULL) {
+		$this->level($level);
+		$dim = $this->get_dimension(); //получили размерность и проверили на квадратность
+		$this->item($item,$dim-1); //предмет добавляем строго по координатам
+		if (!empty($phenomen)) {
+			$this->add_data($phenomen,$dim,$dim);
+		}
+		return $this;
+	}
+	
+	/**	
+	 * Добавление феномена
+	*/
+	
+	public function add_data($content,$x,$y) {
+	
+		return $this;
+	}
+	
+	/**	
+	 * Добавление списка уровней в виде массива в иерархию уровней
+	*/
+	
+	public function add_levels($add_levels) {
+		$add_levels = array_values($add_levels);
+		$levels = $this->levels();
+		$this->data['levels'] = array_merge($levels,$add_levels);
+		return $this;
+	}
+		
+	/**	
+	 * Добавление списка предметов в виде массива
+	*/
+	
+	public function add_items($add_items) {
+		$add_items = array_values($add_items);
+		$items = $this->items();
+		$this->data['items'] = array_merge($items,$add_items);
+		return $this;
+	}
+	
+	
+	/**	
+	 * Автогенерация предбазиса матрицы
+	*/
+	
+	public function autogenerate() {
+		if (count($this->data['levels'])>count($this->data['items'])) {
+			$this->generate_items();
+		} else {
+			$this->generate_levels();
+		}		
+		$this->cast();
+		return $this;
+	}
+	
+	/**	
+	 * Генерация предметов
+	*/
+	
+	public function generate_items() {
+		foreach ($this->data['levels'] as $key=>$level)
+		{
+			if (is_string($level) and empty($this->data['items'][$key])) {
+				$this->data['items'][$key] = Defaults::matrix['item'].' '.$level;
+			} else {
+				throw new \Exception(Errors::matrix['M06']);
+			}
+		}		
+	}
+	
+	/**	
+	 * Генерация уровней
+	*/
+	
+	public function generate_levels() {
+		foreach ($this->data['items'] as $key=>$item)
+		{
+			if (is_string($item) and empty($this->data['levels'][$key])) {
+				$this->data['levels'][$key] = Defaults::matrix['level'].' '.$item;
+			} else {
+				throw new \Exception(Errors::matrix['M07']);
+			}
+		}		
+	}
+	
+	/**	
+	 * Добавление элементарных агрегатов массивами
+	*/
+	
+	public function add_agregats($levels,$items) {
+		$this->add_levels($levels);
+		$this->add_items($items);
+		$this->cast(); //приведение размерности массивов уровней и предметов
+		return $this;
+	}
+	
+	/**	
+	 * Удаление элементов матрицы: если передано одно значение, то удаляется весь уровень и предмет, если два - то обнуляется феномен с координатами вектора
+	*/
+	
+	public function delete($x, $y=NULL) {
+		if (empty($y)) {
+			$this->rebuild($x); 
+		} else {
+			unset ($this->data['data'][$x][$y]); 
+		}		
+		return $this;
+	}
+	
+	
 	
 }

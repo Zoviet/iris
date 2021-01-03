@@ -14,7 +14,13 @@ Flight::render('footer', array('base_url'=>'http://iris/'), 'footer_content');
 
 Flight::route('/', function(){ //временный редирект на тест связи
 echo 'start';
+$reestr = new iris\Reestr();
+var_dump($reestr);
+$items = array('Рукожопы', 'Пиздоболы', 'Мудаки', 'Твари масочные');
+$matrix = new iris\Matrix();
+$matrix->add_items($items)->autogenerate();
 
+var_dump($matrix);
 	
 });
 
