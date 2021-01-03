@@ -1,0 +1,90 @@
+[
+    {
+        "name": "ladamalina/lingua-stem-ru",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "git@github.com:ladamalina/php-lingua-stem-ru.git",
+            "reference": "c530218ee019b6e08008c537b3958fe745775f1a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ladamalina/php-lingua-stem-ru/zipball/c530218ee019b6e08008c537b3958fe745775f1a",
+            "reference": "c530218ee019b6e08008c537b3958fe745775f1a",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "codeception/base": "^2.2.3",
+            "codeception/specify": "~0.4.3",
+            "codeception/verify": "~0.3.1"
+        },
+        "time": "2017-09-24T06:29:50+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Stem\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Nadezhda Ryabtsova",
+                "email": "nadezhdaryabtsova@gmail.com"
+            }
+        ],
+        "description": "Стеммер Портера. Извлечение корня из русского слова, без словаря."
+    },
+    {
+        "name": "mikecao/flight",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/mikecao/flight.git",
+            "reference": "b3120f8db2ae3b358c1c7a412a92d7aa008a57b4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/mikecao/flight/zipball/b3120f8db2ae3b358c1c7a412a92d7aa008a57b4",
+            "reference": "b3120f8db2ae3b358c1c7a412a92d7aa008a57b4",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.6"
+        },
+        "time": "2020-01-23T05:33:11+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "files": [
+                "flight/autoload.php",
+                "flight/Flight.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Mike Cao",
+                "email": "mike@mikecao.com",
+                "homepage": "http://www.mikecao.com/",
+                "role": "Original Developer"
+            }
+        ],
+        "description": "Flight is a fast, simple, extensible framework for PHP. Flight enables you to quickly and easily build RESTful web applications.",
+        "homepage": "http://flightphp.com"
+    }
+]

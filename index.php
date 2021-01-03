@@ -19,8 +19,15 @@ var_dump($reestr);
 $items = array('Рукожопы', 'Пиздоболы', 'Мудаки', 'Твари масочные');
 $matrix = new iris\Matrix();
 $matrix->add_items($items)->autogenerate();
+echo $matrix->stem('Рукожопы');
 
-var_dump($matrix);
+$semantic = new iris\Semantic('Специалисты по охранному мастерству (спецы по пулям)');
+$semantic->remove_braces();
+var_dump($semantic->words());
+//var_dump(str_word_count('dsad jjkj олоол воыло',2));
+//var_dump($semantic);
+
+//var_dump($matrix);
 	
 });
 

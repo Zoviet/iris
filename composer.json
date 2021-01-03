@@ -10,6 +10,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-		"mikecao/flight": "*"
+		"mikecao/flight": "*",
+		"ladamalina/lingua-stem-ru": "*"
 	}
 }

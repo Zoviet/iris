@@ -279,14 +279,14 @@ class Matrix {
 	
 	
 	/**	
-	 * Автогенерация предбазиса матрицы
+	 * Автогенерация предбазиса матрицы: простая или семантическая
 	*/
 	
-	public function autogenerate() {
+	public function autogenerate($semantic=FALSE) {
 		if (count($this->data['levels'])>count($this->data['items'])) {
-			$this->generate_items();
+			$this->generate_items($semantic);
 		} else {
-			$this->generate_levels();
+			$this->generate_levels($semantic);
 		}		
 		$this->cast();
 		return $this;
@@ -296,11 +296,11 @@ class Matrix {
 	 * Генерация предметов
 	*/
 	
-	public function generate_items() {
+	public function generate_items($semantic) {
 		foreach ($this->data['levels'] as $key=>$level)
 		{
 			if (is_string($level) and empty($this->data['items'][$key])) {
-				$this->data['items'][$key] = Defaults::matrix['item'].' '.$level;
+				$this->data['items'][$key] = ($semantic) ? $this->semantic($level) : Defaults::matrix['item'].' '.$level;
 			} else {
 				throw new \Exception(Errors::matrix['M06']);
 			}
@@ -311,16 +311,32 @@ class Matrix {
 	 * Генерация уровней
 	*/
 	
-	public function generate_levels() {
+	public function generate_levels($semantic) {
 		foreach ($this->data['items'] as $key=>$item)
 		{
 			if (is_string($item) and empty($this->data['levels'][$key])) {
-				$this->data['levels'][$key] = Defaults::matrix['level'].' '.$item;
+				$this->data['levels'][$key] = ($semantic) ? $this->semantic($item) : Defaults::matrix['level'].' '.$item;
 			} else {
 				throw new \Exception(Errors::matrix['M07']);
 			}
 		}		
 	}
+	
+	/**	
+	 * Семантическая генерация уровня организации из предмета
+	*/
+	
+	/**	
+	 * Выделение стемов
+	*/
+	
+	public function stem($string) {
+		
+		$stem = new \Stem\LinguaStemRu;
+		return $stem->stem_word($string);
+	}
+	
+	
 	
 	/**	
 	 * Добавление элементарных агрегатов массивами
