@@ -24,6 +24,9 @@ echo $matrix->stem('Рукожопы');
 $semantic = new iris\Semantic('Специалисты по охранному мастерству (спецы по пулям)');
 $semantic->remove_braces();
 var_dump($semantic->words());
+foreach ($items as $word) {
+	echo $word; echo ':'; echo $semantic->test_word($word,TRUE);
+}
 //var_dump(str_word_count('dsad jjkj олоол воыло',2));
 //var_dump($semantic);
 
