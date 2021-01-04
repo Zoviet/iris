@@ -50,7 +50,7 @@ class Semantic {
 		/*
 		Существительные
 		*/	
-		'NOUNS' => array ('а','ев','ов','ье','иями','ями','ами','еи','ии','и','ией','ей','ой','ий','й','иям','ям','ием','ем','ам','ом','о','у','ах','иях','ях','ы','ь','ию','ью','ю','ия','ья','я','ок', 'мва', 'яна', 'ровать','ег','ги','га','сть','сти'),
+		'NOUNS' => array ('а','ев','ов','ье','иями','ями','ами','еи','ии','и','ией','ей','ой','ий','й','иям','ям','ием','ем','ам','ом','о','у','ах','иях','ях','ы','ь','ию','ью','ю','ия','ья','я','ок', 'мва', 'яна', 'ровать','ег','ги','га','сть','сти','ики','ик'),
 		/*
 		Наречия
 		*/	
@@ -103,6 +103,7 @@ class Semantic {
 	*/
 	
 	public function __construct($string) {
+		mb_internal_encoding('UTF-8');
 		if (!is_string($string) or empty($string)) {
 			throw new \Exception(self::ERRORS['S01']);
 		} else {
@@ -185,17 +186,27 @@ class Semantic {
 	
 	public function explore() {
 		foreach ($this->words as $word) {
-			
+			$this->result[self::test_word($word)][] = $word;
 		}
+		return $this;
+	}
+	
+	/**	
+	 * Базовая обработка слова
+	*/
+	
+	public static function prepare_word($word) {
+		$word = trim(mb_strtolower($word));
+		return str_replace('ё', 'е', $word);
 	}
 	
 	/**	
 	 * Определение части речи слова, вторым параметром передается необходимость интерпретации в текстовом виде
 	*/
 	
-	public function test_word($word,$interpretate=FALSE) {
+	public static function test_word($word,$interpretate=FALSE) {
 		$result = 'UNKN'; //результат по умолчанию: 'не определено'
-		$word = trim(mb_strtolower($word));
+		$word = self::prepare_word($word);
 		$lenght = mb_strlen($word);
 		foreach (self::LEMMS as $name=>$set) {
 			foreach ($set as $lemma) {
@@ -230,6 +241,50 @@ class Semantic {
 		return $result;	
 	}	
 
+	/**	
+	 * Избавление слов из массива слов по типам от окончаний по словарю 
+	*/
+	
+	public function remove_endings() {
+		if(empty($this->result)) $this->explore();
+		foreach ($this->result as $type=>$set) {
+			foreach ($set as $key=>$word) {
+				$this->result[$type][$key] = self::remove_ending($word,$type);
+			}
+		}
+		return $this;
+	}
+	
+	/**	
+	 * Избавление слова от окончаний по словарю, второй параметр - указатель на тип слова
+	 * Возвращает обрезанное слово
+	*/
+	
+	public static function remove_ending($word,$type=FALSE) {
+		$word = self::prepare_word($word);
+		$w_end = '';
+		if (empty($type)) $type = self::test_word($word);
+		if ($type!=='UNKN') { 
+			foreach (self::LEMMS[$type] as $lemma) {
+				if (mb_substr($word,-mb_strlen($lemma)) == $lemma) {
+					$w_end = mb_substr($word,0, mb_strlen($word)-mb_strlen($lemma));
+					break;
+				}				
+			}
+		} else {
+			$w_end = self::stem($word);
+		}
+		return $w_end;
+	}
+	
+	/**	
+	 * Стемминг слова по алгоритму Мартина Портера
+	*/
+	
+	public static function stem($word) {
+		$stem = new \Stem\LinguaStemRu;
+		return $stem->stem_word($word);
+	}
 	
 	/**	
 	 * Поиск значимого слова для преобразования
@@ -237,53 +292,6 @@ class Semantic {
 	
 	public function word() {
 	
-	}
-	
-	/*
-	Группы окончаний:
-	1. прилагательные
-	2. причастие
-	3. глагол
-	4. существительное
-	5. наречие
-	6. числительное
-	7. союз
-	8. предлог
-	* На основе https://habr.com/ru/post/152389/
-	*/
-	
-	public function chastrechiRUS($string){	
-
-	
-
-		$res=array();
-		$string=mb_strtolower($string);
-		$words=explode(' ',$string);
-
-		foreach ($words as $wk=>$w){
-			$len_w=mb_strlen($w);
-			foreach ($groups as $gk=>$g){
-				foreach ($g as $part){
-					$len_part=mb_strlen($part);
-					if (
-						mb_substr($w,-$len_part)==$part && $res[$wk][$gk]<$len_part //любая часть речи, окончания
-						|| mb_strpos($w,$part)>=(round(2*$len_w)/5) && $gk==2 //причастие, от 40% и правее от длины слова
-						|| mb_substr($w,0,$len_part)==$part && $res[$wk][$gk]<$len_part && $gk==7 //союз, сначала слОва
-						|| $w==$part //полное совпадение
-					) {
-					if ($w!=$part) $res[$wk][$gk]=mb_strlen($part); else $res[$wk][$gk]=99;
-					}
-
-				}
-			}
-			if (!isset($res[$wk][$gk])) $res[$wk][$gk]=0;
-		}
-		$result=array();
-		foreach($res as $r) {
-			arsort($r);
-			array_push($result,key($r));
-		}
-	return $result;
 	}
 	
 	

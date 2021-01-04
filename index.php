@@ -25,7 +25,7 @@ $semantic = new iris\Semantic('Специалисты по охранному м
 $semantic->remove_braces();
 var_dump($semantic->words());
 foreach ($items as $word) {
-	echo $word; echo ':'; echo $semantic->test_word($word,TRUE);
+	echo $word; echo ':'; echo $semantic::remove_ending($word);
 }
 //var_dump(str_word_count('dsad jjkj олоол воыло',2));
 //var_dump($semantic);
