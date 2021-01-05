@@ -15,22 +15,21 @@ Flight::render('footer', array('base_url'=>'http://iris/'), 'footer_content');
 Flight::route('/', function(){ //временный редирект на тест связи
 echo 'start';
 $reestr = new iris\Reestr();
-var_dump($reestr);
+//var_dump($reestr);
 $items = array('Рукожопы', 'Пиздоболы', 'Мудаки', 'Твари масочные');
 $matrix = new iris\Matrix();
 $matrix->add_items($items)->autogenerate();
-echo $matrix->stem('Рукожопы');
 
-$semantic = new iris\Semantic('Специалисты, сделанные по охранному мастерству (спецы по пулям) Безвредные и опасные вирусы в соответствие с классификацией инфекций Профессиональные картины мира людей, включённых в эпидемию');
+$semantic = new iris\Semantic('Товарищи, филологический сегодня нам предстоит решить очень важный, в некотором смысле судьбоносный, спорный и, кхм, давно назревший вопрос');
 $semantic->remove_braces();
-$semantic->explore()->stemming();
-var_dump($semantic);
+echo $semantic->get_noun();
+//var_dump($semantic);
+echo '-------------------------------------------------------<br/>';
+$speller = new iris\Speller('cпециалист');
 
 //$semantic->explore();//remove_endings();
 //var_dump($semantic->result);
-foreach ($items as $word) {
-	echo $word; echo ':'; echo $semantic::remove_ending($word);
-}
+
 //var_dump(str_word_count('dsad jjkj олоол воыло',2));
 //var_dump($semantic);
 

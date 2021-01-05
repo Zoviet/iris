@@ -38,7 +38,7 @@ class Semantic {
 		/*
 		Прилагательные
 		*/	
-		'ADJS' => array ('ее','ие','ые','ое','ими','ыми','ей','ий','ый','ой','ем','им','ым','ом', 'его','ого','ему','ому','их','ых','ую','юю','ая','яя','ою','ею'),
+		'ADJS' => array ('ее','ие','ые','ое','ими','ыми','ей','ий','ый','ой','ем','им','ым','ом', 'его','ого','ему','ому','их','ых','ую','юю','ая','яя','ою','ею','кий','кый','тий','тый','вий','вый','кие','кые','тые','вие','вые','вший'),
 		/*
 		Причастия
 		*/	
@@ -54,7 +54,7 @@ class Semantic {
 		/*
 		Наречия
 		*/	
-		'ADVS' => array ('чно', 'еко', 'соко', 'боко', 'роко', 'имо', 'мно', 'жно', 'жко','ело','тно','льно','здо','зко','шо','хо','но'),
+		'ADVS' => array ('чно', 'еко', 'соко', 'боко', 'роко', 'имо', 'мно', 'жно', 'жко','ело','тно','льно','здо','зко','шо','хо','но','сегодня','завтра','вчера'),
 		/*
 		Числительные
 		*/	
@@ -67,6 +67,17 @@ class Semantic {
 		Предлоги
 		*/	
 		'PRES' => array ('в','на','по','из','и')
+    ];
+    
+    /*
+     * Суффиксы
+     * 
+     */ 
+    private const SUFFIX = [
+		/*
+		 * Образующие прилагательные
+		 */
+		'ADJS' => array('оньк','еньк','евит','оват','овит','еват','чат','янн','ист','чив','лив','ов','ев','ив','ев','ск','ин','ич','яч','ущ','ан', 'н'),
     ];
     
     /*
@@ -116,7 +127,7 @@ class Semantic {
 	 * @param string данные для обработки      
      * @return void
 	*/
-	
+		
 	public function __construct($string) {
 		mb_internal_encoding('UTF-8');
 		if (!is_string($string) or empty($string)) {
@@ -124,6 +135,15 @@ class Semantic {
 		} else {
 			$this->string = trim($string);
 		}
+	}
+	
+	/**	
+	 * Запуск методов конвейера через запрос свойств    
+     * @return void
+	*/
+		
+	public function __get($name) {
+		call_user_func(array($this, $name));		
 	}
 	
 	/**	
@@ -247,13 +267,13 @@ class Semantic {
 						}
 					break;
 					default: //во всех остальных случаях					
-						if ($word == $lemma or mb_substr($word,-mb_strlen($lemma)) == $lemma) {						
+						if ($word == $lemma or mb_substr($word,-mb_strlen($lemma)) == $lemma) {	
 							$result[$ver] = $name;
-							break 2;
+							break;
 						}
 				}
 			}
-		}									
+		}								
 		ksort($result); //выбираем результат с наибольшей доверительной вероятностью		
 		$result = array_pop($result); 
 		$result = ($interpretate) ? self::TYPES[$result] : $result;
@@ -286,7 +306,6 @@ class Semantic {
 		return $this;
 	}
 	
-	
 	/**	
 	 * Обертка для методов избавления от окончаний, не чувствительная к типу обработки
 	*/
@@ -313,10 +332,10 @@ class Semantic {
 			foreach (self::LEMMS[$type] as $lemma) {
 				if (mb_substr($word,-mb_strlen($lemma)) == $lemma) {
 					$w_end = mb_substr($word,0, mb_strlen($word)-mb_strlen($lemma));
-					if (mb_strlen($w_end) == 0) $w_end = $word;
 					break;
 				}				
 			}
+			if (mb_strlen($w_end) == 0) $w_end = $word;
 		} else {
 			$w_end = self::stem($word);
 		}
@@ -359,7 +378,13 @@ class Semantic {
 			$count_adjs = count($this->result['ADJS']); //количество прилагательных
 			$count_verbs = count($this->result['VERBS']); //количество глаголов
 			$words = count($this->words); //длина фразы	
-			$result = $this->result['ADJS'][0];
+			foreach ($this->result['ADJS'] as $adj) {
+				if (mb_substr($adj,-2) == 'ий' or mb_substr($adj,-2) == 'ый') {
+					$result = $adj;
+					break;
+				}
+			}
+			$result = (empty($result)) ? $this->result['ADJS'][0] : $result;
 		}
 		return $result;
 	}
@@ -387,20 +412,24 @@ class Semantic {
 	}
 		
 	/**	
-	 * Получение прилагательного из значимого существительного
+	 * Получение существительного из значимого прилагательного, можно передавамого параметром
 	 * Если не найдено, возвращает NULL.	 
 	*/
 	
-	public function get_adj() {
-		$result = NULL;
-		$suffixs = array('н', 'ан', 'ин', 'ий', 'ов', 'ск', 'ист', 'чат', 'лив');
-		$adj = $this->find_adj();
+	public function get_noun($word=NULL) {
+		$stem = NULL;
+		$adj = (empty($word)) ? $this->find_adj() : $word;
 		if (!empty($adj)) {
 			$stem = self::remove_ending($adj,'ADJS'); //убираем окончание
-			$ending = $this->get_ending($adj,$stem); //получаем убранное окончание
-			
+			foreach (self::SUFFIX['ADJS'] as $suffix) {
+				if (mb_substr($stem,-mb_strlen($suffix)) == $suffix) {
+					$stem = str_replace($suffix,'',$stem);
+					$stem = $this->get_noun(self::stem($stem));
+					break;
+				}
+			}
 		}
-		return $result;
+		return Speller::check($stem);
 	}
 	
 }
