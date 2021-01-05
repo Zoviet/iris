@@ -21,9 +21,13 @@ $matrix = new iris\Matrix();
 $matrix->add_items($items)->autogenerate();
 echo $matrix->stem('Рукожопы');
 
-$semantic = new iris\Semantic('Специалисты по охранному мастерству (спецы по пулям)');
+$semantic = new iris\Semantic('Специалисты, сделанные по охранному мастерству (спецы по пулям) Безвредные и опасные вирусы в соответствие с классификацией инфекций Профессиональные картины мира людей, включённых в эпидемию');
 $semantic->remove_braces();
-var_dump($semantic->words());
+$semantic->explore()->stemming();
+var_dump($semantic);
+
+//$semantic->explore();//remove_endings();
+//var_dump($semantic->result);
 foreach ($items as $word) {
 	echo $word; echo ':'; echo $semantic::remove_ending($word);
 }

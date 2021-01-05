@@ -66,12 +66,13 @@ class Semantic {
 		/*
 		Предлоги
 		*/	
-		'PRES' => array ('в','на','по','из')
+		'PRES' => array ('в','на','по','из','и')
     ];
     
     /*
 	Интерпретация результатов
-	* 	
+	* 
+	* Части речи	
 	*/    
     public const TYPES = [
 		'UNKN' => 'Не определено',
@@ -84,17 +85,31 @@ class Semantic {
 		'ADJS' => 'Прилагательное',
 		'UNIS' => 'Союзы'
     ];
+    
+    /*
+	* Члены предложения
+	*/   
+    
+    public const PARTS = [
+		'UNKN' => 'Не определено',
+		'SUBJ' => 'Подлежащее',
+		'ADDN' => 'Дополнение',
+		'PRED' => 'Сказуемое',
+		'DFN' => 'Определение',
+		'CIRC' => 'Обстоятельство'
+    ];
+    
         
 	/**
 	* Свойства
 	* @var  protected string string Принимаемая строка для обработки.
 	* @var  public string words Слова строки.
-	* @var  public mixed result Результат.
+	* @var  public array result Массив слов по частям речи (в зависимости от глубины обработки: лишенных оснований или нет).
 	* 
 	*/	
 	protected $string;
-	public $words;
-	public $result;
+	public $words = array();
+	public $result = array();
 		
 	/**	
 	 * 	Конструктор 	 
@@ -108,7 +123,6 @@ class Semantic {
 			throw new \Exception(self::ERRORS['S01']);
 		} else {
 			$this->string = trim($string);
-			$this->words();
 		}
 	}
 	
@@ -185,7 +199,8 @@ class Semantic {
 	*/
 	
 	public function explore() {
-		foreach ($this->words as $word) {
+		if (empty($this->words)) $this->words();
+		foreach ($this->words as $word) {	
 			$this->result[self::test_word($word)][] = $word;
 		}
 		return $this;
@@ -205,52 +220,82 @@ class Semantic {
 	*/
 	
 	public static function test_word($word,$interpretate=FALSE) {
-		$result = 'UNKN'; //результат по умолчанию: 'не определено'
+		$result[0] = 'UNKN'; //результат по умолчанию: 'не определено'
 		$word = self::prepare_word($word);
 		$lenght = mb_strlen($word);
-		foreach (self::LEMMS as $name=>$set) {
+		foreach (self::LEMMS as $name=>$set) {			
 			foreach ($set as $lemma) {
-				switch ($name) {
+				$lemma_len = mb_strlen($lemma);
+				$ver = round(($lemma_len/$lenght)*100); //доверительная вероятность каждого результата				
+				switch ($name) {					
 					case 'PARTS': //причастие
 						if (mb_strpos($word,$lemma)>=(round(2*$lenght)/5)) {
-							$result = $name;
+							$result[$ver] = $name; //результаты храним в массиве, где длина совпадения леммы = доверительной вероятности
 							break 2;
 						}
 					break;
 					case 'UNIS': //союзы
-						if (mb_substr($word,0,mb_strlen($lemma))==$lemma) {
-							$result = $name;
+						if (mb_substr($word,0,$lemma_len)==$lemma) {
+							$result[$ver] = $name;
 							break 2;
 						}
 					break;
-					case 'PRES': //предлоги
-						if ($word == $lemma) {
-							$result = $name;
+					case 'PRES': //предлоги	
+						if ($word == $lemma) {						
+							$result[$ver] = $name;
 							break 2;
 						}
 					break;
-					default: //во всех остальных случаях
-						if ($word == $lemma or mb_substr($word,-mb_strlen($lemma)) == $lemma) {
-							$result = $name;
+					default: //во всех остальных случаях					
+						if ($word == $lemma or mb_substr($word,-mb_strlen($lemma)) == $lemma) {						
+							$result[$ver] = $name;
 							break 2;
 						}
 				}
 			}
-		}		
+		}									
+		ksort($result); //выбираем результат с наибольшей доверительной вероятностью		
+		$result = array_pop($result); 
 		$result = ($interpretate) ? self::TYPES[$result] : $result;
 		return $result;	
 	}	
 
 	/**	
-	 * Избавление слов из массива слов по типам от окончаний по словарю 
+	 * Избавление слов из массива слов по типам от окончаний по словарю по массиву типов
 	*/
 	
-	public function remove_endings() {
+	protected function remove_endings() {
 		if(empty($this->result)) $this->explore();
 		foreach ($this->result as $type=>$set) {
 			foreach ($set as $key=>$word) {
-				$this->result[$type][$key] = self::remove_ending($word,$type);
+				$this->result[$type][$key] = self::remove_ending($word,$type);				
 			}
+		}
+		return $this;
+	}
+	
+	/**	
+	 * Избавление слов из массива слов по типам от окончаний по словарю по массиву слов
+	*/
+	
+	protected function remove_words_endings() {
+		if(empty($this->words)) $this->words();
+		foreach ($this->words as $word) {
+			$this->words[] = self::remove_ending($word);	
+		}
+		return $this;
+	}
+	
+	
+	/**	
+	 * Обертка для методов избавления от окончаний, не чувствительная к типу обработки
+	*/
+	
+	public function stemming() {
+		if(!empty($this->result)) {
+			$this->remove_endings();
+		} else {
+			$this->remove_words_endings();
 		}
 		return $this;
 	}
@@ -264,10 +309,11 @@ class Semantic {
 		$word = self::prepare_word($word);
 		$w_end = '';
 		if (empty($type)) $type = self::test_word($word);
-		if ($type!=='UNKN') { 
+		if ($type!=='UNKN' and $type!=='PARTS') { 
 			foreach (self::LEMMS[$type] as $lemma) {
 				if (mb_substr($word,-mb_strlen($lemma)) == $lemma) {
 					$w_end = mb_substr($word,0, mb_strlen($word)-mb_strlen($lemma));
+					if (mb_strlen($w_end) == 0) $w_end = $word;
 					break;
 				}				
 			}
@@ -287,12 +333,74 @@ class Semantic {
 	}
 	
 	/**	
-	 * Поиск значимого слова для преобразования
+	 * Выделение значимого существительного из массива слов. 
+	 * Если не найдено, возвращает NULL.	 
 	*/
 	
-	public function word() {
-	
+	public function find_noun() {
+		$result = NULL;
+		if(empty($this->result)) $this->explore(); //если нет никакого предварительного результата, не с окончаниями, ни без
+		if (isset($this->result['NOUNS'])) {
+			$result = $this->result['NOUNS'][0];
+		}
+		return $result;
 	}
 	
+	/**	
+	 * Выделение значимого прилагательного из массива слов. 
+	 * Если не найдено, возвращает NULL.	 
+	*/
+	
+	public function find_adj() {
+		$result = NULL;
+		if(empty($this->result)) $this->explore(); //если нет никакого предварительного результата, не с окончаниями, ни без
+		if (isset($this->result['ADJS'])) {
+			$count_nouns = count($this->result['NOUNS']); //количество существительных
+			$count_adjs = count($this->result['ADJS']); //количество прилагательных
+			$count_verbs = count($this->result['VERBS']); //количество глаголов
+			$words = count($this->words); //длина фразы	
+			$result = $this->result['ADJS'][0];
+		}
+		return $result;
+	}
+	
+	/**	
+	 * Выделение значимого глагола из массива слов. 
+	 * Если не найдено, возвращает NULL.	 
+	*/
+	
+	public function find_verb() {
+		$result = NULL;
+		if(empty($this->result)) $this->explore(); //если нет никакого предварительного результата, не с окончаниями, ни без
+		if (isset($this->result['VERBS'])) {	
+			$result = $this->result['VERBS'][0];
+		}
+		return $result;
+	}
+	
+	/**	
+	 * Получение удаленного окончания слова сравнением строк (т.к. могут использоваться разные методы избавления от окончаний)
+	*/
+	
+	protected function get_ending($word,$stem) {
+		return trim(str_replace($stem,'',$word));
+	}
+		
+	/**	
+	 * Получение прилагательного из значимого существительного
+	 * Если не найдено, возвращает NULL.	 
+	*/
+	
+	public function get_adj() {
+		$result = NULL;
+		$suffixs = array('н', 'ан', 'ин', 'ий', 'ов', 'ск', 'ист', 'чат', 'лив');
+		$adj = $this->find_adj();
+		if (!empty($adj)) {
+			$stem = self::remove_ending($adj,'ADJS'); //убираем окончание
+			$ending = $this->get_ending($adj,$stem); //получаем убранное окончание
+			
+		}
+		return $result;
+	}
 	
 }
