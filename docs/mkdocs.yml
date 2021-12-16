@@ -1,0 +1,8 @@
+site_name: My Docs
+
+nav:
+    - Главная: index.md
+    - Библиотека обработки текстов: lexicon.md
+
+
+theme: readthedocs

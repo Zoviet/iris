@@ -6,4 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Parsedown' => array($vendorDir . '/erusev/parsedown'),
+    'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
+    'Gaufrette' => array($vendorDir . '/knplabs/gaufrette/src'),
 );

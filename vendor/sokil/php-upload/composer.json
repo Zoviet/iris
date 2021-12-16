@@ -1,0 +1,27 @@
+{
+    "name": "sokil/php-upload",
+    "description": "File uploader",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dmytro Sokil",
+            "email": "dmytro.sokil@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sokil\\Upload\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.3",
+        "knplabs/gaufrette": ">=0.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=3.7.38 <6.0",
+        "satooshi/php-coveralls": ">=0.7.1 <2.0"
+    },
+    "suggest": {
+        "sokil/file-storage-bundle" : "Symfony bundle"
+    }
+}
